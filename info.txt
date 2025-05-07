@@ -1,0 +1,19 @@
+CREAR UN PROYECTO EN LARAVEL 8
+
+-PLANTILLA
+-Añadir bootstrap 5
+-base de datos "peliculas"
+-Migracion tabla "catalogo"
+  -titulo
+  -descripcion
+  -genero
+  -director
+  -fecha_estreno
+
+-Controlador "catalogo"
+
+-vistas y rutas
+  -inicio
+  -listado_peliculas
+  -agregar
+  -editar
