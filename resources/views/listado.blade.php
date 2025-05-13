@@ -17,6 +17,7 @@
                 <th scope="col">Id</th>
                 <th scope="col">Título</th>
                 <th scope="col">Género</th>
+                <th scope="col">Descripcion</th>
                 <th scope="col">Director</th>
                 <th scope="col">Acciones</th>
             </tr>
@@ -27,6 +28,7 @@
         <td>{{ $pelicula->id }}</td>
         <td>{{ $pelicula->Titulo }}</td>
         <td>{{ $pelicula->Genero }}</td>
+        <td>{{ $pelicula->Descripcion }}</td>
         <td>{{ $pelicula->Director }}</td>
         <td>
             <a href="{{ route('catalogo.editar', $pelicula->id) }}" class="btn btn-warning">Editar</a>

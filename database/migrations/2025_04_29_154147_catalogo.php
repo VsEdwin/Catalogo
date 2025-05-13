@@ -24,6 +24,7 @@ class Catalogo extends Migration
         });
     }
 
+    
     /**
      * Reverse the migrations.
      *
