@@ -123,14 +123,39 @@ public function eliminar($id)
 
 public function guardarUsuario(Request $request)
 {
-    // Validación básica
     $request->validate([
-        'nombre' => 'required|string|max:255',
-        'apellido_paterno' => 'required|string|max:255',
-        'apellido_materno' => 'required|string|max:255',
-        'usuario' => 'required|string|max:255|unique:usuarios,Usuario',
+        'nombre' => 'required|string|min:3|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+        'apellido_paterno' => 'required|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+        'apellido_materno' => 'required|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+        'usuario' => 'required|string|max:255|unique:usuarios,Usuario|regex:/^[a-zA-Z0-9_]+$/',
         'correo' => 'required|email|max:255|unique:usuarios,Correo',
-        'password' => 'required|string|min:6',
+        'password' => [
+            'required',
+            'min:6',
+            'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/'
+        ],
+    ], [
+        'nombre.required' => 'El campo Nombre es obligatorio.',
+        'nombre.min' => 'El nombre debe tener al menos 3 caracteres.',
+        'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
+
+        'apellido_paterno.required' => 'El campo Apellido Paterno es obligatorio.',
+        'apellido_paterno.regex' => 'El apellido paterno solo puede contener letras y espacios.',
+
+        'apellido_materno.required' => 'El campo Apellido Materno es obligatorio.',
+        'apellido_materno.regex' => 'El apellido materno solo puede contener letras y espacios.',
+
+        'usuario.required' => 'El campo Usuario es obligatorio.',
+        'usuario.unique' => 'Este nombre de usuario ya está en uso.',
+        'usuario.regex' => 'El usuario solo puede contener letras, números y guiones bajos (_).',
+
+        'correo.required' => 'El campo Correo es obligatorio.',
+        'correo.email' => 'El formato del correo no es válido.',
+        'correo.unique' => 'Este correo ya está registrado.',
+
+        'password.required' => 'La contraseña es obligatoria.',
+        'password.min' => 'La contraseña debe tener al menos 6 caracteres.',
+        'password.regex' => 'La contraseña debe incluir al menos una letra minúscula, una mayúscula, un número y un símbolo especial.',
     ]);
 
     // Crear el usuario
@@ -140,16 +165,20 @@ public function guardarUsuario(Request $request)
     $usuario->Apellido_M = $request->apellido_materno;
     $usuario->Usuario = $request->usuario;
     $usuario->Correo = $request->correo;
-    $usuario->Password = Hash::make($request->password); // Encriptar contraseña
+    $usuario->Password = Hash::make($request->password);
     $usuario->save();
 
     return redirect()->route('Registro')->with('success', '¡Usuario registrado exitosamente!');
 }
 
+
 public function validarLogin(Request $request) {
     $request->validate([
         'usuario' => 'required|string',
         'password' => 'required|string',
+    ], [
+        'usuario.required' => 'El campo usuario es obligatorio.',
+        'password.required' => 'El campo contraseña es obligatorio.',
     ]);
 
     $usuario = Usuario::where('Usuario', $request->usuario)
@@ -162,8 +191,11 @@ public function validarLogin(Request $request) {
 
         return redirect()->route('Inicio')->with('success', '¡Bienvenido!');
     } else {
-        return back()->withErrors(['Login' => 'Credenciales incorrectas']);
+        return back()->withErrors([
+            'login' => 'Usuario o contraseña incorrectos.'
+        ])->withInput(); // Mantiene lo que el usuario escribió
     }
 }
+
 
 }
