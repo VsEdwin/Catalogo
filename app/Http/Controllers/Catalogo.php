@@ -184,7 +184,7 @@ public function guardarUsuario(Request $request)
         'correo.unique' => 'Este correo ya está registrado.',
 
         'password.required' => 'La contraseña es obligatoria.',
-        'password.min' => 'La contraseña debe tener al menos 6 caracteres.',
+        'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
         'password.regex' => 'La contraseña debe incluir al menos una letra minúscula, una mayúscula, un número y un símbolo especial.',
     ]);
 
@@ -198,7 +198,7 @@ public function guardarUsuario(Request $request)
     $usuario->Password = Hash::make($request->password);
     $usuario->save();
 
-    return redirect()->route('Registro')->with('success', '¡Usuario registrado exitosamente!');
+    return redirect()->route('Login')->with('success', '¡Usuario registrado exitosamente!');
 }
 
 
