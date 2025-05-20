@@ -6,9 +6,9 @@
 <div class="form-container">
     <div class="login-header">
         <h1>Iniciar sesión</h1>
-    </div>
+</div>
 
-    @if(session('error'))
+@if(session('error'))
     <div class="alert alert-danger text-center">
         {{ session('error') }}
     </div>
@@ -24,7 +24,7 @@
     <div class="alert alert-danger">
         <ul style="margin: 0; padding-left: 1.5rem;">
             @foreach ($errors->all() as $error)
-                @if($error !== $errors->first('login')) {{-- Ya mostramos este antes --}}
+                @if($error !== $errors->first('login'))
                     <li>{{ $error }}</li>
                 @endif
             @endforeach
@@ -41,7 +41,7 @@
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Contraseña</label>
-            <input type="password" name="password" class="form-control" id="password" placeholder="Introduce tu contraseña" required>
+            <input type="password" name="password" class="form-control" id="password" placeholder="Introduce tu contraseña">
         </div>
         <button type="submit" class="btn btn-primary w-100">Iniciar sesión</button>
         <div class="form-group mt-3">

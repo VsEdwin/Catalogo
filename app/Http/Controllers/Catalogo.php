@@ -59,27 +59,48 @@ class Catalogo extends Controller
     }
 
 
-    public function guardar(Request $request){
-    // Validar datos (opcional pero recomendado)
+    public function guardar(Request $request) {
     $request->validate([
-        'titulo' => 'required|string|max:255',
-        'descripcion' => 'required|string',
-        'genero' => 'required|string|max:255',
-        'director' => 'required|string|max:255',
-        'fecha_estreno' => 'required|date',
+        'titulo'        => 'required|string|min:2|max:255',
+        'descripcion'   => 'required|string|min:10',
+        'genero'        => 'required|string|max:100|regex:/^[\pL\s]+$/u',
+        'director'      => 'required|string|max:100|regex:/^[\pL\s]+$/u',
+        'fecha_estreno' => 'required|date|before_or_equal:today',
+    ], [
+        // TÍTULO
+        'titulo.required' => 'El campo Título es obligatorio.',
+        'titulo.min'      => 'El título debe tener al menos :min caracteres.',
+        'titulo.max'      => 'El título no puede tener más de :max caracteres.',
+
+        // DESCRIPCIÓN
+        'descripcion.required' => 'La descripción es obligatoria.',
+        'descripcion.min'      => 'La descripción debe tener al menos :min caracteres.',
+
+        // GÉNERO
+        'genero.required' => 'El campo Género es obligatorio.',
+        'genero.regex'    => 'El género solo debe contener letras y espacios.',
+
+        // DIRECTOR
+        'director.required' => 'El campo Director es obligatorio.',
+        'director.regex'    => 'El nombre del director solo debe contener letras y espacios.',
+
+        // FECHA DE ESTRENO
+        'fecha_estreno.required'        => 'La fecha de estreno es obligatoria.',
+        'fecha_estreno.date'            => 'La fecha de estreno debe ser válida.',
+        'fecha_estreno.before_or_equal' => 'La fecha no puede ser futura.',
     ]);
 
-    // Guardar en base de datos
     Catalogos::create([
-        'Titulo' => $request->input('titulo'),
-        'Descripcion' => $request->input('descripcion'),
-        'Genero' => $request->input('genero'),
-        'Director' => $request->input('director'),
+        'Titulo'        => $request->input('titulo'),
+        'Descripcion'   => $request->input('descripcion'),
+        'Genero'        => $request->input('genero'),
+        'Director'      => $request->input('director'),
         'fecha_estreno' => $request->input('fecha_estreno'),
     ]);
 
     return redirect()->route('Listado')->with('success', 'Película agregada exitosamente.');
-    }
+}
+
 
 public function editar($id)
 {
@@ -92,9 +113,16 @@ public function actualizar(Request $request, $id)
     $request->validate([
         'titulo' => 'required|string|max:255',
         'descripcion' => 'required|string',
-        'genero' => 'required|string',
-        'director' => 'required|string',
+        'genero' => 'required|string|max:255',
+        'director' => 'required|string|max:255',
         'fecha_estreno' => 'required|date',
+    ], [
+        'titulo.required' => 'El título es obligatorio.',
+        'descripcion.required' => 'La descripción es obligatoria.',
+        'genero.required' => 'El género es obligatorio.',
+        'director.required' => 'El director es obligatorio.',
+        'fecha_estreno.required' => 'La fecha de estreno es obligatoria.',
+        'fecha_estreno.date' => 'Debe ser una fecha válida.',
     ]);
 
     $pelicula = Catalogos::findOrFail($id);
@@ -107,6 +135,8 @@ public function actualizar(Request $request, $id)
 
     return redirect()->route('Listado')->with('success', 'Película actualizada correctamente.');
 }
+
+
 
 public function eliminar($id)
 {
